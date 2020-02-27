@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
 import * as yup from "yup";
+import axios from 'axios';
+import { useForm } from "react-hook-form";
 
 //Styled form components
-
 const StyledForm = styled.form`
    width: 100%;
 
@@ -16,11 +16,25 @@ const StyledForm = styled.form`
    font-size: 1.2rem;
 `;
 
-const StyledTextInput = styled.input`
+const InputDiv = styled.div`
+   margin: 10px;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+`;
+
+const StyledInput = styled.input`
+   border-radius: 5px;
+   height: 70%;
    font-size: 1em;
+   width: 100%;
+`;
+const StyledTextInput = styled(StyledInput)`
 `;
 
 const FormWarning = styled.p`
+   padding: 4px;
+   text-align: left;
    color: red;
    margin: 0;
 `;
@@ -55,73 +69,103 @@ const schema = yup.object().shape({
       .required("You must accept the terms of service to continue.")
 });
 
+//Main form component
 const SignupForm = props => {
    const { register, handleSubmit, errors } = useForm({
+      defaultValues: {
+         firstName: '',
+         lastName: '',
+         email: '',
+         password: '',
+         mobileNumber: '',
+         termsOfService: false,
+      },
       validationSchema: schema
    });
-   const onSubmit = data => console.log(data);
+
+   const onSubmit = data => {
+         console.log("submitting! ", data);
+         axios
+           .post("https://reqres.in/api/users/", data)
+           .then(res => {
+             console.log('success', res);
+           })
+           .catch(err => console.log(err.response));
+   }
 
    return (
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
-         <StyledTextInput
-            type="text"
-            placeholder="First name"
-            name="firstName"
-            ref={register}
-         />
-         {errors.firstName && (
-            <FormWarning>{errors.firstName.message}</FormWarning>
-         )}
+         <InputDiv>
+            <StyledTextInput
+               type="text"
+               placeholder="First name"
+               name="firstName"
+               ref={register}
+            />
+            {errors.firstName && (
+               <FormWarning>{errors.firstName.message}</FormWarning>
+            )}
+         </InputDiv>
 
-         <StyledTextInput
-            type="text"
-            placeholder="Last name"
-            name="lastName"
-            ref={register}
-         />
-         {errors.lastName && (
-            <FormWarning>{errors.lastName.message}</FormWarning>
-         )}
+         <InputDiv>
+            <StyledTextInput
+               type="text"
+               placeholder="Last name"
+               name="lastName"
+               ref={register}
+            />
+            {errors.lastName && (
+               <FormWarning>{errors.lastName.message}</FormWarning>
+            )}
+         </InputDiv>
 
-         <StyledTextInput
-            type="text"
-            placeholder="Email"
-            name="email"
-            ref={register}
-         />
-         {errors.email && <FormWarning>{errors.email.message}</FormWarning>}
+         <InputDiv>
+            <StyledTextInput
+               type="text"
+               placeholder="Email"
+               name="email"
+               ref={register}
+            />
+            {errors.email && <FormWarning>{errors.email.message}</FormWarning>}
+         </InputDiv>
 
-         <StyledTextInput
-            type="password"
-            placeholder="Password"
-            name="password"
-            ref={register}
-         />
-         {errors.password && (
-            <FormWarning>{errors.password.message}</FormWarning>
-         )}
+         <InputDiv>
+            <StyledTextInput
+               type="password"
+               placeholder="Password"
+               name="password"
+               ref={register}
+            />
+            {errors.password && (
+               <FormWarning>{errors.password.message}</FormWarning>
+            )}
+         </InputDiv>
 
-         <StyledTextInput
-            type="tel"
-            placeholder="Mobile number"
-            name="mobileNumber"
-            ref={register}
-         />
-         {errors.mobileNumber && (
-            <FormWarning>{errors.mobileNumber.message}</FormWarning>
-         )}
+         <InputDiv>
+            <StyledTextInput
+               type="tel"
+               placeholder="Mobile number"
+               name="mobileNumber"
+               ref={register}
+            />
+            {errors.mobileNumber && (
+               <FormWarning>{errors.mobileNumber.message}</FormWarning>
+            )}
+         </InputDiv>
 
-         <StyledTextInput
-            type="checkbox"
-            placeholder="Terms of Service"
-            name="termsOfService"
-            ref={register}
-         />
-         {errors.termsOfService && (
-            <FormWarning>{errors.termsOfService.message}</FormWarning>
-         )}
+         <InputDiv>
+            <StyledTextInput
+               type="checkbox"
+               placeholder="Terms of Service"
+               name="termsOfService"
+               ref={register}
+            />
+            {errors.termsOfService && (
+               <FormWarning>{errors.termsOfService.message}</FormWarning>
+            )}
+         </InputDiv>
 
-         <StyledTextInput type="submit" />
+         <button type="submit">Submit</button>
       </StyledForm>
    );
 };
