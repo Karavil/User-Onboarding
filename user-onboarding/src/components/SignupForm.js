@@ -20,13 +20,24 @@ const InputDiv = styled.div`
    flex-direction: column;
 `;
 
+const StyledLabel = styled.label`
+   text-align: left;
+`;
+
 const StyledInput = styled.input`
    border-radius: 5px;
-   height: 70%;
    font-size: 1em;
-   width: 100%;
+   margin: 0;
+
+   &[type='checkbox'] {
+      transform: scale(1.2);
+      margin: 0 10px;
+
+      &:checked {
+         background: #abd;
+      }
+   }
 `;
-const StyledTextInput = styled(StyledInput)``;
 
 const FormWarning = styled.p`
    padding: 4px;
@@ -82,7 +93,8 @@ const testValues = {
 const SignupForm = props => {
    const { register, handleSubmit, errors, reset } = useForm({
       defaultValues: testValues,
-      validationSchema: schema
+      validationSchema: schema,
+      mode: "onBlur"
    });
 
    const onSubmit = data => {
@@ -95,15 +107,13 @@ const SignupForm = props => {
             props.addNewSignup(user);
          })
          .catch(err => console.log(err.response));
-      reset({
-
-      });
+      reset({});
    };
 
    return (
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
          <InputDiv>
-            <StyledTextInput
+            <StyledInput
                type="text"
                placeholder="First name"
                name="firstName"
@@ -115,7 +125,7 @@ const SignupForm = props => {
          </InputDiv>
 
          <InputDiv>
-            <StyledTextInput
+            <StyledInput
                type="text"
                placeholder="Last name"
                name="lastName"
@@ -127,7 +137,7 @@ const SignupForm = props => {
          </InputDiv>
 
          <InputDiv>
-            <StyledTextInput
+            <StyledInput
                type="text"
                placeholder="Email"
                name="email"
@@ -137,7 +147,7 @@ const SignupForm = props => {
          </InputDiv>
 
          <InputDiv>
-            <StyledTextInput
+            <StyledInput
                type="password"
                placeholder="Password"
                name="password"
@@ -149,7 +159,7 @@ const SignupForm = props => {
          </InputDiv>
 
          <InputDiv>
-            <StyledTextInput
+            <StyledInput
                type="tel"
                placeholder="Mobile number"
                name="mobileNumber"
@@ -161,12 +171,17 @@ const SignupForm = props => {
          </InputDiv>
 
          <InputDiv>
-            <StyledTextInput
-               type="checkbox"
-               placeholder="Terms of Service"
-               name="termsOfService"
-               ref={register}
-            />
+            <StyledLabel htmlFor="termsOfService">
+               I accept the Terms of Service:
+               <StyledInput
+                  className="checkbox"
+                  type="checkbox"
+                  placeholder="Terms of Service"
+                  name="termsOfService"
+                  id="termsOfService"
+                  ref={register}
+               />
+            </StyledLabel>
             {errors.termsOfService && (
                <FormWarning>{errors.termsOfService.message}</FormWarning>
             )}
