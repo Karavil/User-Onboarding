@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import * as yup from "yup";
-import axios from 'axios';
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 //Styled form components
@@ -29,8 +29,7 @@ const StyledInput = styled.input`
    font-size: 1em;
    width: 100%;
 `;
-const StyledTextInput = styled(StyledInput)`
-`;
+const StyledTextInput = styled(StyledInput)``;
 
 const FormWarning = styled.p`
    padding: 4px;
@@ -40,10 +39,10 @@ const FormWarning = styled.p`
 `;
 
 // Schema for form input (rules, etc)
-const phoneRegExp =
-   "/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/";
-const passwordRegExp =
-   "^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,30}$";
+const phoneRegExp = new RegExp("^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-s./0-9]*$");
+const passwordRegExp = new RegExp(
+   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,30})"
+);
 
 const schema = yup.object().shape({
    firstName: yup.string().required("Please enter your first name."),
@@ -56,12 +55,15 @@ const schema = yup.object().shape({
       .string()
       .matches(
          passwordRegExp,
-         "Please make sure to have a minimum eight and maximum 30 characters, at least one uppercase letter, one lowercase letter, one number and one special character."
+         "Please make sure to have a minimum 8 and maximum 30 characters, at least one uppercase letter, one lowercase letter, one number and one special character."
       )
       .required("Please enter a password."),
    mobileNumber: yup
       .string()
-      .matches(phoneRegExp, "Please enter a valid number.")
+      .matches(
+         phoneRegExp,
+         "Please enter a valid phone number. Example: 3059332288"
+      )
       .required("Please enter a mobile number."),
    termsOfService: yup
       .boolean()
@@ -69,29 +71,35 @@ const schema = yup.object().shape({
       .required("You must accept the terms of service to continue.")
 });
 
+//Test values
+const testValues = {
+   firstName: "Cool",
+   lastName: "Name",
+   email: "coolemail123@gmail.com",
+   password: "CoolPassword123$",
+   mobileNumber: "292-332-3392",
+   termsOfService: true
+};
+
 //Main form component
 const SignupForm = props => {
-   const { register, handleSubmit, errors } = useForm({
-      defaultValues: {
-         firstName: '',
-         lastName: '',
-         email: '',
-         password: '',
-         mobileNumber: '',
-         termsOfService: false,
-      },
+   const { register, handleSubmit, errors, reset } = useForm({
+      defaultValues: testValues,
       validationSchema: schema
    });
 
    const onSubmit = data => {
-         console.log("submitting! ", data);
-         axios
-           .post("https://reqres.in/api/users/", data)
-           .then(res => {
-             console.log('success', res);
-           })
-           .catch(err => console.log(err.response));
-   }
+      console.log("submitting! ", data);
+      axios
+         .post("https://reqres.in/api/users/", data)
+         .then(res => {
+            console.log("success", res.data);
+         })
+         .catch(err => console.log(err.response));
+      reset({
+
+      });
+   };
 
    return (
       <StyledForm onSubmit={handleSubmit(onSubmit)}>
@@ -165,7 +173,7 @@ const SignupForm = props => {
             )}
          </InputDiv>
 
-         <button type="submit">Submit</button>
+         <input type="submit" />
       </StyledForm>
    );
 };
