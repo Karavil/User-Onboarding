@@ -91,6 +91,8 @@ const SignupForm = props => {
          .post("https://reqres.in/api/users/", data)
          .then(res => {
             console.log("success", res.data);
+            const user = res.data;
+            props.addNewSignup(user);
          })
          .catch(err => console.log(err.response));
       reset({
