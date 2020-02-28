@@ -10,8 +10,6 @@ const StyledForm = styled.form`
 
    display: flex;
    flex-direction: column;
-   justify-content: space-between;
-   height: 300px;
 
    font-size: 1.2rem;
 `;
@@ -20,7 +18,6 @@ const InputDiv = styled.div`
    margin: 10px;
    display: flex;
    flex-direction: column;
-   justify-content: space-between;
 `;
 
 const StyledInput = styled.input`
